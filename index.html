@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Recurring events missing from print</title>
+    <!-- Change the version here: 7.2.1 prints every occurrence, 7.2.3+ (up to 7.3.7) prints only one -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@bryntum/schedulerpro-trial@7.3.7/schedulerpro.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@bryntum/schedulerpro-trial@7.3.7/stockholm-light.css">
+    <style>body { margin: 0; font-family: sans-serif; } #scheduler { height: 300px; }</style>
+</head>
+<body>
+    <button id="print">Print</button>
+    <div id="scheduler"></div>
+    <script type="module">
+        import { SchedulerPro } from 'https://cdn.jsdelivr.net/npm/@bryntum/schedulerpro-trial@7.3.7/schedulerpro.module.js';
+
+        const scheduler = new SchedulerPro({
+            appendTo              : 'scheduler',
+            startDate             : new Date(2026, 8, 1),
+            endDate               : new Date(2026, 8, 8),
+            viewPreset            : 'dayAndWeek',
+            enableRecurringEvents : true,
+            columns               : [{ field : 'name', text : 'Employee', width : 120 }],
+            features              : { print : true },
+            project               : {
+                resources : [{ id : 1, name : 'Sally' }, { id : 2, name : 'Guy' }],
+                events    : [
+                    { id : 'rec', name : 'Recurring (daily)', startDate : '2026-09-01T08:00', endDate : '2026-09-01T16:00', recurrenceRule : 'FREQ=DAILY', resourceId : 1 },
+                    { id : 'single', name : 'One-off', startDate : '2026-09-03T08:00', endDate : '2026-09-03T16:00', resourceId : 2 }
+                ]
+            }
+        });
+
+        document.getElementById('print').onclick = () => scheduler.features.print.print({
+            exporterType  : 'multipagevertical',
+            rowsRange     : 'all',
+            scheduleRange : 'completeview'
+        });
+    </script>
+</body>
+</html>
